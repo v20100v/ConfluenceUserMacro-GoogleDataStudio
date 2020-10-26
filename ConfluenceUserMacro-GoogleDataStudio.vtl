@@ -1,0 +1,82 @@
+## ---
+## Macro name: google_data_studio_report
+## Macro title: Google Data Studio
+## Macro description: Embed Google Data Studio's report or dashboard into a Confluence page.
+## Macro has a body: N
+## Developed by: 2o1oo <vb20100bv@gmail.com>
+## Version: 1.0.0
+## Date created: 08/04/2019
+## Last modification: 09/04/2019
+## ---
+
+
+## -------------------------
+## Macro parameters (french)
+## -------------------------
+## @param GoogleDataStudioUrl:title=URL|type=string|required=true|desc=URL vers le tableau de bord GDS à incorporer (https://datastudio.google.com/embed/reporting/1se-9ZRSukdgQUiRqYTSjT8nFLTV0v8Uq/page/y5MR)
+## @param width:title=Largeur|type=string|desc=En pixels ou en pourcentage. Par exemple, 600 ou 80%.|default=100%
+## @param height:title=Hauteur|type=string|desc=En pixels ou en pourcentage. Par exemple, 400 ou 50%.|default=400
+## @param border:title=Ajoute une bordure|type=boolean|default=false
+## @param blocBgColor:title=Couleur de fond du bloc|type=string|desc=Pour changer la couleur de fond.
+## @param blocBorderColor:title=Couleur de la bordure du bloc|type=string|desc=Pour changer la couleur de la bordure.
+
+
+## ----------------
+## Check parameters
+## ----------------
+#if (!$paramwidth)
+  #set ($paramwidth="100%")
+#end
+#if (!$paramheight)
+  #set ($paramheight=400)
+#end
+#if (!$paramborder)
+  #set ($paramborder=false)
+#end
+#if (!$paramblocBgColor)
+  #set ( $paramblocBgColor= "#FCFCFC" )
+#end
+#if (!$paramblocBorderColor)
+  #set ( $paramblocBorderColor= "#99A4BE" )
+#end
+#if (!$paramGoogleDataStudioUrl)
+  #set ($paramGoogleDataStudioUrl="Error_GDS_Url_is_empty")
+#end
+
+
+## ---
+## Check if GoogleDataStudioUrl is valid
+## ---
+#set ($indexOfUrl=$paramGoogleDataStudioUrl.indexOf("https://datastudio.google.com"))
+#if ($indexOfUrl == -1)
+  #set ($isValidUrl = "false")
+#else
+  #set ($isValidUrl = "true")
+#end
+
+
+## ---
+## Output
+## ---
+#if($isValidUrl == "true")
+	#if($paramborder == "true")
+		<div class="GDSMacro" style="width: calc($paramwidth + 20px);">
+			<ac:structured-macro ac:name="panel" ac:schema-version="1">
+				<ac:parameter ac:name="bgColor">$paramblocBgColor</ac:parameter>
+				<ac:parameter ac:name="borderColor">$paramblocBorderColor</ac:parameter>
+				<ac:rich-text-body>
+					<iframe width="$paramwidth" height="$paramheight" src="$paramGoogleDataStudioUrl" frameborder="0" style="border:0" allowfullscreen>
+					</iframe>
+				</ac:rich-text-body>
+			</ac:structured-macro>
+		</div>
+    #else
+		<iframe width="$paramwidth" height="$paramheight" src="$paramGoogleDataStudioUrl" frameborder="0" style="border: none" allowfullscreen>
+		</iframe>
+    #end
+#else
+    <div class="aui-message aui-message-error">
+        <p class="title"><strong>Erreur dans la macro Google Data Studio !</strong></p>
+        <p>L'url utilisé le tableau de bord Google Data Studio n'est pas valide pour cette macro. Elle doit faire référence à une application hébergé sur <b>datastudio.google.com</b></p>
+    </div>
+#end
